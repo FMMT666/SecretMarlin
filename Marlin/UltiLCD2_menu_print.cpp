@@ -582,6 +582,16 @@ static char* tune_item_callback(uint8_t nr)
         strcpy_P(c, PSTR("Retraction"));
     else if (nr == 5 + EXTRUDERS * 2)
         strcpy_P(c, PSTR("LED Brightness"));
+
+#ifdef G666_ENABLED
+    // G666, added by ASkr(FMMT666)
+    else if (nr == 6 + EXTRUDERS * 2)
+        strcpy_P(c, PSTR("Tune head UP"));
+    else if (nr == 7 + EXTRUDERS * 2)
+        strcpy_P(c, PSTR("Tune head DOWN"));
+#endif
+      
+        
     return c;
 }
 
@@ -680,7 +690,12 @@ void lcd_menu_print_tune_heatup_nozzle1()
 extern void lcd_menu_maintenance_advanced_bed_heatup();//TODO
 static void lcd_menu_print_tune()
 {
+#ifdef G666_ENABLED            
+    lcd_scroll_menu(PSTR("TUNE"), 8 + EXTRUDERS * 2, tune_item_callback, tune_item_details_callback);
+#else
     lcd_scroll_menu(PSTR("TUNE"), 6 + EXTRUDERS * 2, tune_item_callback, tune_item_details_callback);
+#endif    
+
     if (lcd_lib_button_pressed)
     {
         if (IS_SELECTED_SCROLL(0))
@@ -711,6 +726,21 @@ static void lcd_menu_print_tune()
             lcd_change_to_menu(lcd_menu_print_tune_retraction);
         else if (IS_SELECTED_SCROLL(5 + EXTRUDERS * 2))
             LCD_EDIT_SETTING(led_brightness_level, "Brightness", "%", 0, 100);
+
+#ifdef G666_ENABLED            
+        // G666, added by ASkr(FMMT666)
+        else if (IS_SELECTED_SCROLL(6 + EXTRUDERS * 2))
+        {
+          lcd_lib_beep();
+          enquecommand_P(PSTR(CMD_G666_UP));
+        }
+        else if (IS_SELECTED_SCROLL(7 + EXTRUDERS * 2))
+        {
+          lcd_lib_beep();
+          enquecommand_P(PSTR(CMD_G666_DOWN));
+        }
+#endif
+            
     }
 }
 

@@ -567,6 +567,28 @@ const bool Z_ENDSTOPS_INVERTING = true; // set to true to invert the logic of th
 //#define SERVO_ENDSTOPS {-1, -1, 0} // Servo index for X, Y, Z. Disable with -1
 //#define SERVO_ENDSTOP_ANGLES {0,0, 0,0, 70,0} // X,Y,Z Axis Extend and Retract angles
 
+
+
+
+// G666, online height adjustment while printing; added by FMMT666(ASkr)
+// Now in here, "SecretMarlin" for UM2 (12/2013, FMMT666(ASkr))
+//   USAGE:
+//     G666 Z0.1
+//   This will move the printing head up 0.1mm, but it also sets the new machine height to the previous value.
+//   Larger values than G666_LIMIT_UP or _DOWN will be clamped to these max. settings.
+//   G666 is equal to turning the Z-spindle by hand.
+//   Especially useful if the machine lays  down several skirt outlines before it starts printing the object.
+//   The command is buffered, so it might take a while until it gets active, but execution during a skirt, brim
+//   or raft is layed down, usually happens within a few seconds.
+//   WARNING: Z-AXIS MAY MOVE BEYOND LIMITS!
+//   By setting _LIMIT_UP or _DOWN to 0, movement in that direction will not be executed.
+#define G666_ENABLED                  // activate online height adjustment
+#define G666_LIMIT_UP    0.1          // must be >= 0; limit movement away from bed (single G666 command)
+#define G666_LIMIT_DOWN -0.1          // must be <= 0; limit movement towards bed   (single G666 command)
+#define CMD_G666_UP   "G666 Z0.10"    // LCD command for tuning the print head height UP
+#define CMD_G666_DOWN "G666 Z-0.10"   // LCD command for tuning the print head height DOWN
+
+
 #include "Configuration_adv.h"
 #include "thermistortables.h"
 

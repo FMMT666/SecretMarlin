@@ -67,6 +67,8 @@
 // G90 - Use Absolute Coordinates
 // G91 - Use Relative Coordinates
 // G92 - Set current position to cordinates given
+// G666- Adjust Z-axis height during printing; See "configuration.h"; added by FMMT666(ASkr)
+
 
 //RepRap M Codes
 // M0   - Unconditional stop - Wait for user to press a button on the LCD (Only if ULTRA_LCD is enabled)
@@ -766,11 +768,47 @@ void process_commands()
   unsigned long codenum; //throw away variable
   char *starpos = NULL;
 
+  // added by FMMT666(ASkr)
+  float zVal;
+  float lastHeight;
+  
   printing_state = PRINT_STATE_NORMAL;
   if(code_seen('G'))
   {
     switch((int)code_value())
     {
+
+    // added by FMMT666(ASkr)
+    // Change printing height while running.
+    // WARNING: THIS OVERRIDES SW (and HW) endstops!
+    case 666:
+      if( code_seen( axis_codes[Z_AXIS] ) )
+      {
+        zVal = code_value();
+        
+        if( zVal > G666_LIMIT_UP )
+          zVal = G666_LIMIT_UP;
+          
+        if( zVal < G666_LIMIT_DOWN )
+          zVal = G666_LIMIT_DOWN;
+
+        lastHeight = current_position[Z_AXIS];
+
+        // move to new position
+        destination[X_AXIS] = current_position[X_AXIS];
+        destination[Y_AXIS] = current_position[Y_AXIS];
+        destination[E_AXIS] = current_position[E_AXIS];
+        destination[Z_AXIS] += zVal;
+        plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
+
+        // make the machine think it didn't move
+        current_position[Z_AXIS] = lastHeight;
+        plan_set_position(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
+
+        destination[Z_AXIS] = current_position[Z_AXIS];
+      }
+      break;
+    
     case 0: // G0 -> G1
     case 1: // G1
       if(Stopped == false) {
@@ -1791,12 +1829,12 @@ void process_commands()
     #ifdef PREVENT_DANGEROUS_EXTRUDE
     case 302: // allow cold extrudes, or set the minimum extrude temperature
     {
-	  float temp = .0;
-	  if (code_seen('S')) temp=code_value();
+    float temp = .0;
+    if (code_seen('S')) temp=code_value();
       set_extrude_min_temp(temp);
     }
     break;
-	#endif
+  #endif
     case 303: // M303 PID autotune
     {
       float temp = 150.0;

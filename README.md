@@ -1,3 +1,12 @@
+CHANGES BY FMMT666:
+-------------------
+
+*12/2013*
+
+- added G666, online Z-axis adjustment during printing (see configuration.h)
+  - also available via "tune menu" during print
+
+
 ==========================
 Marlin 3D Printer Firmware
 ==========================
