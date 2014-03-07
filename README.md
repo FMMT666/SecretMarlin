@@ -1,6 +1,10 @@
 CHANGES BY FMMT666:
 -------------------
 
+*03/2014*  
+
+- always trying to keep this updated and in-sync with Daid ;-)
+
 *12/2013*
 
 - added G666, online Z-axis adjustment during printing (see configuration.h)
