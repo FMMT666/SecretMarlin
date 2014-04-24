@@ -1,6 +1,22 @@
 CHANGES BY FMMT666:
 -------------------
 
+*04/2014*
+
+- removed the new Z20 move in doStartPrint()  
+  This should be done in the G-code (requires re-enabling start/end G-code panel in Cura).
+
+  I am using this:
+
+    G01 F6000 X120  
+    G01 F3000 Z50  
+    G01 F50 E75  
+    G92 E0  
+
+  It also includes extruding "a lot of" filament to remove the old plastics and
+  have a nice and sticky first layer.
+
+
 *03/2014*  
 
 - always trying to keep this updated and in-sync with Daid ;-)
